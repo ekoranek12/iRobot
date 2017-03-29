@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import AVFoundation
 
-class ViewController: UIViewController, UIGestureRecognizerDelegate {
+class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFileOutputRecordingDelegate{
 	
 	/// Camera Preview
 	@IBOutlet weak var previewView: UIView!
@@ -23,6 +24,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 	/// The long press gesture to trigger recording
 	@IBOutlet weak var longPress: UILongPressGestureRecognizer!
 	
+	var captureSession: AVCaptureSession?
+	var videoPreviewLayer: AVCaptureVideoPreviewLayer?
+	
 	/// The amount of time the current timer has been firing
 	/// Updates the progress view to reflect recording progress and limit
 	/// resets when duration after 10 seconds
@@ -35,12 +39,15 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 		}
 	}
 	
+	let fileURL = documentsDirectory.appendingPathComponent("videoOutput")
+	let fileOutput = AVCaptureMovieFileOutput()
 	var timer: Timer?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
 		overlayImageView.image = IRobotStyleKit.imageOfCameraOverlay
+		createVideoPreviewLayer()
 	}
 	
 	// MARK: - Setup
@@ -48,6 +55,39 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 	private func createTimer() {
 		timer = Timer(timeInterval: 0.01, repeats: true) { (timer) in
 			self.duration += 0.001
+		}
+	}
+	
+	private func createVideoPreviewLayer() {
+		// Camera Setup: http://www.appcoda.com/barcode-reader-swift/
+		guard let frontCamera = AVCaptureDevice.defaultDevice(withDeviceType: .builtInWideAngleCamera, mediaType: AVMediaTypeVideo, position: .front) else { return }
+		
+		do {
+			let input = try AVCaptureDeviceInput(device: frontCamera)
+			
+			captureSession = AVCaptureSession()
+			captureSession?.addInput(input)
+			
+			let captureMetadataOutput = AVCaptureMetadataOutput()
+			captureSession?.addOutput(captureMetadataOutput)
+	
+			if let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+				fileOutput.startRecording(toOutputFileURL: fileURL, recordingDelegate: self)
+				fileOutput.maxRecordedDuration = CMTime(seconds: 10, preferredTimescale: CMTimeScale.allZeros)
+				captureSession?.addOutput(fileOutput)
+			}
+			
+			videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+			videoPreviewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
+			videoPreviewLayer?.frame = view.layer.bounds
+			previewView.layer.addSublayer(videoPreviewLayer!)
+			
+			print("Starting capture session")
+			captureSession?.startRunning()
+			
+		} catch {
+			print("Error starting capture session: \(error)")
+			return
 		}
 	}
 	
@@ -81,5 +121,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 			self.recordView.transform = innerTransform
 		}
 	}
+	
+	// MARK: - AVCaptureFileOutputRecordingDelegate
+	
 }
 
