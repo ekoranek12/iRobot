@@ -93,6 +93,7 @@
                         <outlet property="previewView" destination="jsC-jI-lBi" id="cwy-xL-qz0"/>
                         <outlet property="progressView" destination="alh-io-8wm" id="tkv-qh-erV"/>
                         <outlet property="recordView" destination="7A2-7K-8gF" id="C8u-5C-Vxy"/>
+                        <outlet property="recordViewEffect" destination="SAf-NN-JQL" id="qcr-Z5-c4e"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

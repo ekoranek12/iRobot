@@ -16,6 +16,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 	@IBOutlet weak var progressView: UIProgressView!
 	/// View with long press gesture recognizer
 	@IBOutlet weak var recordView: UIView!
+	/// The visual effect view behind the record view
+	@IBOutlet weak var recordViewEffect: UIVisualEffectView!
 	/// The long press gesture to trigger recording
 	@IBOutlet weak var longPress: UILongPressGestureRecognizer!
 	
@@ -50,6 +52,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 	@IBAction func holdRecord() {
 		switch longPress.state {
 		case .began:
+			bounceRecordView(recording: true)
 			duration = 0.0
 			createTimer()
 			if let timer = timer {
@@ -59,7 +62,19 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 			return
 		case.ended, .cancelled, .failed, .possible:
 			timer?.invalidate()
+			bounceRecordView(recording: false)
 			progressView.setProgress(0.0, animated: true)
+		}
+	}
+	
+	// MARK: - Animations
+	private func bounceRecordView(recording: Bool) {
+		let outerTransform = recording ?  CGAffineTransform(scaleX: 1.1, y: 1.1) : CGAffineTransform.identity
+		let innerTransform = recording ?  CGAffineTransform(scaleX: 0.8, y: 0.8) : CGAffineTransform.identity
+		
+		UIView.animate(withDuration: 0.2) { 
+			self.recordViewEffect.transform = outerTransform
+			self.recordView.transform = innerTransform
 		}
 	}
 }
