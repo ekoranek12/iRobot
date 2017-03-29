@@ -29,6 +29,10 @@
                                     <constraint firstAttribute="width" secondItem="jsC-jI-lBi" secondAttribute="height" multiplier="1280:1920" id="gkQ-Oy-xr7"/>
                                 </constraints>
                             </view>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Xfj-cF-n6q">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </imageView>
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="alh-io-8wm">
                                 <rect key="frame" x="0.0" y="480" width="320" height="88"/>
                                 <color key="progressTintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -77,12 +81,16 @@
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                         <constraints>
+                            <constraint firstItem="Xfj-cF-n6q" firstAttribute="baseline" secondItem="jsC-jI-lBi" secondAttribute="baseline" id="2ls-1Z-MoH"/>
                             <constraint firstAttribute="trailing" secondItem="alh-io-8wm" secondAttribute="trailing" id="4Ky-eQ-2po"/>
                             <constraint firstItem="SAf-NN-JQL" firstAttribute="centerX" secondItem="alh-io-8wm" secondAttribute="centerX" id="84f-Gz-Vqo"/>
                             <constraint firstItem="jsC-jI-lBi" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="8Rc-Zu-L5f"/>
                             <constraint firstAttribute="trailing" secondItem="jsC-jI-lBi" secondAttribute="trailing" id="8yL-jl-EzY"/>
                             <constraint firstItem="jsC-jI-lBi" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="ANE-xD-KHx"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="alh-io-8wm" secondAttribute="bottom" id="Kn9-HK-LcG"/>
+                            <constraint firstItem="Xfj-cF-n6q" firstAttribute="trailing" secondItem="jsC-jI-lBi" secondAttribute="trailing" id="RyI-Ln-XMn"/>
+                            <constraint firstItem="Xfj-cF-n6q" firstAttribute="leading" secondItem="jsC-jI-lBi" secondAttribute="leading" id="XPu-d0-0Ca"/>
+                            <constraint firstItem="Xfj-cF-n6q" firstAttribute="top" secondItem="jsC-jI-lBi" secondAttribute="top" id="i1X-l1-CbB"/>
                             <constraint firstItem="SAf-NN-JQL" firstAttribute="centerY" secondItem="alh-io-8wm" secondAttribute="centerY" id="kR9-hv-dWq"/>
                             <constraint firstItem="alh-io-8wm" firstAttribute="top" secondItem="jsC-jI-lBi" secondAttribute="bottom" id="rLN-c1-d1w"/>
                             <constraint firstItem="alh-io-8wm" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="sQ3-Gx-wPh"/>
@@ -90,6 +98,7 @@
                     </view>
                     <connections>
                         <outlet property="longPress" destination="9nU-Hu-8GC" id="uMd-tq-fcr"/>
+                        <outlet property="overlayImageView" destination="Xfj-cF-n6q" id="Q8S-f6-Sbw"/>
                         <outlet property="previewView" destination="jsC-jI-lBi" id="cwy-xL-qz0"/>
                         <outlet property="progressView" destination="alh-io-8wm" id="tkv-qh-erV"/>
                         <outlet property="recordView" destination="7A2-7K-8gF" id="C8u-5C-Vxy"/>

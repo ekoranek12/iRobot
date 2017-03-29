@@ -12,6 +12,7 @@
 		87A749D71E8BF6AA00274330 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 87A749D51E8BF6AA00274330 /* Main.storyboard */; };
 		87A749D91E8BF6AA00274330 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 87A749D81E8BF6AA00274330 /* Assets.xcassets */; };
 		87A749DC1E8BF6AA00274330 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 87A749DA1E8BF6AA00274330 /* LaunchScreen.storyboard */; };
+		87A749E41E8C1F8600274330 /* IRobotStyleKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A749E31E8C1F8600274330 /* IRobotStyleKit.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		87A749D81E8BF6AA00274330 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		87A749DB1E8BF6AA00274330 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		87A749DD1E8BF6AA00274330 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		87A749E31E8C1F8600274330 /* IRobotStyleKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IRobotStyleKit.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 			children = (
 				87A749D11E8BF6AA00274330 /* AppDelegate.swift */,
 				87A749D31E8BF6AA00274330 /* ViewController.swift */,
+				87A749E31E8C1F8600274330 /* IRobotStyleKit.swift */,
 				87A749D51E8BF6AA00274330 /* Main.storyboard */,
 				87A749D81E8BF6AA00274330 /* Assets.xcassets */,
 				87A749DA1E8BF6AA00274330 /* LaunchScreen.storyboard */,
@@ -139,6 +142,7 @@
 			files = (
 				87A749D41E8BF6AA00274330 /* ViewController.swift in Sources */,
 				87A749D21E8BF6AA00274330 /* AppDelegate.swift in Sources */,
+				87A749E41E8C1F8600274330 /* IRobotStyleKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

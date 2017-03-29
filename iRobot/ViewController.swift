@@ -12,6 +12,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 	
 	/// Camera Preview
 	@IBOutlet weak var previewView: UIView!
+	/// Displays the overview oval during recording
+	@IBOutlet weak var overlayImageView: UIImageView!
 	/// Displays recording duration
 	@IBOutlet weak var progressView: UIProgressView!
 	/// View with long press gesture recognizer
@@ -37,6 +39,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
+		overlayImageView.image = IRobotStyleKit.imageOfCameraOverlay
 	}
 	
 	// MARK: - Setup
