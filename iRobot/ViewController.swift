@@ -37,6 +37,15 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 		super.viewDidLoad()
 	}
 	
+	// MARK: - Setup
+	/// set up the timer used to update the progress view
+	private func createTimer() {
+		timer = Timer(timeInterval: 0.01, repeats: true) { (timer) in
+			self.duration += 0.001
+		}
+	}
+	
+	// MARK: - Actions
 	/// Triggered by the long press gesture
 	@IBAction func holdRecord() {
 		switch longPress.state {
@@ -51,14 +60,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 		case.ended, .cancelled, .failed, .possible:
 			timer?.invalidate()
 			progressView.setProgress(0.0, animated: true)
-		}
-	}
-	
-	
-	/// set up the timer used to update the progress view
-	private func createTimer() {
-		timer = Timer(timeInterval: 0.01, repeats: true) { (timer) in
-			self.duration += 0.001
 		}
 	}
 }
