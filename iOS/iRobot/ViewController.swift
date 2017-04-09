@@ -202,7 +202,11 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 		let transformer = AVMutableVideoCompositionLayerInstruction(assetTrack: assetTrack)
 		
 		let scale = CGFloat(1280.0 / 1080.0)
-		let finalTransform = CGAffineTransform(scaleX: scale, y: scale)
+		let scaleTransform = CGAffineTransform(scaleX: scale, y: scale)
+		let rotateTransform = CGAffineTransform(rotationAngle: CGFloat.pi / 2.0)
+		let offsetTransform = CGAffineTransform(translationX: assetTrack.naturalSize.height, y: -(1920.0 - assetTrack.naturalSize.width))
+		
+		let finalTransform = rotateTransform.concatenating(offsetTransform).concatenating(scaleTransform)
 		transformer.setTransform(finalTransform, at: kCMTimeZero)
 		instruction.layerInstructions = [transformer]
 		composition.instructions = [instruction]
@@ -213,11 +217,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 		exporter?.outputFileType = AVFileTypeMPEG4
 		
 		exporter?.exportAsynchronously(completionHandler: {
-			let asset = AVAsset(url: self.finalURL)
-			let track = asset.tracks(withMediaType: AVMediaTypeVideo).first
-			print(track?.naturalSize)
-			print(self.previewView.bounds)
-			
 			let player = AVPlayer(url: self.finalURL)
 			let playerController = AVPlayerViewController()
 			playerController.player = player
