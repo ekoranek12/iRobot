@@ -78,6 +78,26 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </visualEffectView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hxW-HI-aSg">
+                                <rect key="frame" x="16" y="509" width="50" height="30"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                <state key="normal" title="Cancel">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="tapCancel" destination="BYZ-38-t0r" eventType="touchUpInside" id="Fay-U4-jWZ"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ITf-b3-x4Z">
+                                <rect key="frame" x="253" y="509" width="51" height="30"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                <state key="normal" title="Submit">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="tapSubmit" destination="BYZ-38-t0r" eventType="touchUpInside" id="DyI-Ab-lrx"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                         <constraints>
@@ -86,23 +106,29 @@
                             <constraint firstItem="SAf-NN-JQL" firstAttribute="centerX" secondItem="alh-io-8wm" secondAttribute="centerX" id="84f-Gz-Vqo"/>
                             <constraint firstItem="jsC-jI-lBi" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="8Rc-Zu-L5f"/>
                             <constraint firstAttribute="trailing" secondItem="jsC-jI-lBi" secondAttribute="trailing" id="8yL-jl-EzY"/>
+                            <constraint firstItem="hxW-HI-aSg" firstAttribute="centerY" secondItem="alh-io-8wm" secondAttribute="centerY" id="AIb-Vx-98t"/>
                             <constraint firstItem="jsC-jI-lBi" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="ANE-xD-KHx"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="alh-io-8wm" secondAttribute="bottom" id="Kn9-HK-LcG"/>
+                            <constraint firstAttribute="trailing" secondItem="ITf-b3-x4Z" secondAttribute="trailing" constant="16" id="LL4-CO-zTn"/>
                             <constraint firstItem="Xfj-cF-n6q" firstAttribute="trailing" secondItem="jsC-jI-lBi" secondAttribute="trailing" id="RyI-Ln-XMn"/>
                             <constraint firstItem="Xfj-cF-n6q" firstAttribute="leading" secondItem="jsC-jI-lBi" secondAttribute="leading" id="XPu-d0-0Ca"/>
+                            <constraint firstItem="ITf-b3-x4Z" firstAttribute="centerY" secondItem="alh-io-8wm" secondAttribute="centerY" id="fEm-q8-WfZ"/>
                             <constraint firstItem="Xfj-cF-n6q" firstAttribute="top" secondItem="jsC-jI-lBi" secondAttribute="top" id="i1X-l1-CbB"/>
                             <constraint firstItem="SAf-NN-JQL" firstAttribute="centerY" secondItem="alh-io-8wm" secondAttribute="centerY" id="kR9-hv-dWq"/>
+                            <constraint firstItem="hxW-HI-aSg" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="16" id="otv-Bf-fsw"/>
                             <constraint firstItem="alh-io-8wm" firstAttribute="top" secondItem="jsC-jI-lBi" secondAttribute="bottom" id="rLN-c1-d1w"/>
                             <constraint firstItem="alh-io-8wm" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="sQ3-Gx-wPh"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="cancelButton" destination="hxW-HI-aSg" id="5n3-7s-LLJ"/>
                         <outlet property="longPress" destination="9nU-Hu-8GC" id="uMd-tq-fcr"/>
                         <outlet property="overlayImageView" destination="Xfj-cF-n6q" id="Q8S-f6-Sbw"/>
                         <outlet property="previewView" destination="jsC-jI-lBi" id="cwy-xL-qz0"/>
                         <outlet property="progressView" destination="alh-io-8wm" id="tkv-qh-erV"/>
                         <outlet property="recordView" destination="7A2-7K-8gF" id="C8u-5C-Vxy"/>
                         <outlet property="recordViewEffect" destination="SAf-NN-JQL" id="qcr-Z5-c4e"/>
+                        <outlet property="submitButton" destination="ITf-b3-x4Z" id="uoN-2w-5qg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

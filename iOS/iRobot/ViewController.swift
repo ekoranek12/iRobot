@@ -25,9 +25,14 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 	/// The long press gesture to trigger recording
 	@IBOutlet weak var longPress: UILongPressGestureRecognizer!
 	
+	@IBOutlet weak var cancelButton: UIButton!
+	@IBOutlet weak var submitButton: UIButton!
+	
 	var captureSession: AVCaptureSession?
 	var videoPreviewLayer: AVCaptureVideoPreviewLayer?
+	
 	var playerLooper: AVPlayerLooper?
+	var playerLayer: AVPlayerLayer?
 	
 	/// The amount of time the current timer has been firing
 	/// Updates the progress view to reflect recording progress and limit
@@ -50,6 +55,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 		
 		overlayImageView.image = IRobotStyleKit.imageOfCameraOverlay
 		createVideoPreviewLayer()
+		toggleButton(visibility: false, duration: 0.0)
 	}
 	
 	// MARK: - Setup
@@ -70,12 +76,13 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 			captureSession = AVCaptureSession()
 			captureSession?.addInput(input)
 		
-//			fileOutput.maxRecordedDuration = CMTime(seconds: 10, preferredTimescale: CMTimeScale.allZeros)
 			captureSession?.addOutput(fileOutput)
 			
 			videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
 			videoPreviewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
-			videoPreviewLayer?.frame = view.layer.bounds
+			videoPreviewLayer?.frame = view.bounds
+			videoPreviewLayer?.connection.automaticallyAdjustsVideoMirroring = false
+			videoPreviewLayer?.connection.isVideoMirrored = false
 			previewView.layer.addSublayer(videoPreviewLayer!)
 			
 			print("Starting capture session")
@@ -92,6 +99,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 	@IBAction func holdRecord() {
 		switch longPress.state {
 		case .began:
+			playerLayer?.removeFromSuperlayer()
 			bounceRecordView(recording: true)
 			duration = 0.0
 			createTimer()
@@ -106,7 +114,17 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 			bounceRecordView(recording: false)
 			progressView.setProgress(0.0, animated: true)
 			fileOutput.stopRecording()
+			toggleButton(visibility: true)
 		}
+	}
+	
+	@IBAction func tapCancel() {
+		toggleButton(visibility: false)
+		playerLayer?.removeFromSuperlayer()
+	}
+	
+	@IBAction func tapSubmit() {
+		
 	}
 	
 	// MARK: - Animations
@@ -117,6 +135,15 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 		UIView.animate(withDuration: 0.2) { 
 			self.recordViewEffect.transform = outerTransform
 			self.recordView.transform = innerTransform
+		}
+	}
+	
+	private func toggleButton(visibility visible: Bool, duration: TimeInterval = 0.3) {
+			UIView.animate(withDuration: duration) {
+				self.cancelButton.isEnabled = visible
+				self.cancelButton.alpha = visible ? 1.0 : 0.0
+				self.submitButton.isEnabled = visible
+				self.submitButton.alpha = visible ? 1.0 : 0.0
 		}
 	}
 	
@@ -133,12 +160,12 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 	// test
 	private func play(videoAt URL: URL) {
 		let player = AVQueuePlayer()
-		let playerLayer = AVPlayerLayer(player: player)
+		playerLayer = AVPlayerLayer(player: player)
 		let playerItem = AVPlayerItem(url: URL)
 		playerLooper = AVPlayerLooper(player: player, templateItem: playerItem)
-		previewView.layer.addSublayer(playerLayer)
-		playerLayer.frame = previewView.bounds
-		playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+		previewView.layer.addSublayer(playerLayer!)
+		playerLayer?.frame = view.bounds
+		playerLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
 		player.play()
 	}
 }
