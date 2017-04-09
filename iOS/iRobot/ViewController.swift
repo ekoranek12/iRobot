@@ -80,15 +80,27 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 			
 			captureSession = AVCaptureSession()
 			captureSession?.addInput(input)
-		
 			captureSession?.addOutput(fileOutput)
+			
+			var videoConnection:AVCaptureConnection?
+			
+			// http://stackoverflow.com/questions/30406417/need-to-mirror-video-orientation-and-handle-rotation-when-using-front-camera/30646150
+			// Flip camera output
+			for connection in self.fileOutput.connections {
+				for port in (connection as AnyObject).inputPorts! {
+					if (port as AnyObject).mediaType == AVMediaTypeVideo {
+						videoConnection = connection as? AVCaptureConnection
+						if videoConnection!.isVideoMirroringSupported {
+							videoConnection!.isVideoMirrored = true
+						}
+					}
+				}
+			}
 			
 			videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
 			videoPreviewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
 			let width = UIScreen.main.bounds.width
 			videoPreviewLayer?.frame = CGRect(x: 0, y: 0, width: width, height: width * (1920.0 / 1280.0))
-			videoPreviewLayer?.connection.automaticallyAdjustsVideoMirroring = false
-			videoPreviewLayer?.connection.isVideoMirrored = false
 			previewView.layer.addSublayer(videoPreviewLayer!)
 			
 			print("Starting capture session")
@@ -130,7 +142,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 	}
 	
 	@IBAction func tapSubmit() {
-		cropVideo()
+		magicAndCrap()
 	}
 	
 	// MARK: - Animations
@@ -186,7 +198,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 		player.play()
 	}
 	
-	private func cropVideo() {
+	private func magicAndCrap() {
 		try? FileManager.default.removeItem(at: finalURL)
 		
 		let asset = AVAsset(url: fileURL)
@@ -201,15 +213,32 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 		
 		let transformer = AVMutableVideoCompositionLayerInstruction(assetTrack: assetTrack)
 		
-		let scale = CGFloat(1280.0 / 1080.0)
+		let scale = CGFloat(1280.0 / assetTrack.naturalSize.height)
 		let scaleTransform = CGAffineTransform(scaleX: scale, y: scale)
 		let rotateTransform = CGAffineTransform(rotationAngle: CGFloat.pi / 2.0)
-		let offsetTransform = CGAffineTransform(translationX: assetTrack.naturalSize.height, y: -(1920.0 - assetTrack.naturalSize.width))
+		let offsetTransform = CGAffineTransform(translationX: assetTrack.naturalSize.height, y: -128) // Yeah. Idk either.
 		
 		let finalTransform = rotateTransform.concatenating(offsetTransform).concatenating(scaleTransform)
 		transformer.setTransform(finalTransform, at: kCMTimeZero)
 		instruction.layerInstructions = [transformer]
 		composition.instructions = [instruction]
+		
+		// Overlay
+		let overlayLayer = CALayer()
+		overlayLayer.contents = IRobotStyleKit.imageOfCameraOverlay.cgImage
+		overlayLayer.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 1280, height: 1920))
+		overlayLayer.masksToBounds = true
+		
+		let videoLayer = CALayer()
+		videoLayer.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 1280, height: 1920))
+		
+		let parentLayer = CALayer()
+		parentLayer.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 1280, height: 1920))
+		parentLayer.addSublayer(videoLayer)
+		parentLayer.addSublayer(overlayLayer)
+		
+		composition.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: videoLayer, in: parentLayer)
+		//End overlay
 		
 		let exporter = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality)
 		exporter?.videoComposition = composition
