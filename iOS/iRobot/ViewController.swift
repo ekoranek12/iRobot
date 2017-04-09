@@ -7,9 +7,10 @@
 //
 
 import UIKit
+import AVKit
 import AVFoundation
 
-class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFileOutputRecordingDelegate{
+class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFileOutputRecordingDelegate {
 	
 	/// Camera Preview
 	@IBOutlet weak var previewView: UIView!
@@ -26,6 +27,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 	
 	var captureSession: AVCaptureSession?
 	var videoPreviewLayer: AVCaptureVideoPreviewLayer?
+	var playerLooper: AVPlayerLooper?
 	
 	/// The amount of time the current timer has been firing
 	/// Updates the progress view to reflect recording progress and limit
@@ -39,7 +41,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 		}
 	}
 	
-	let fileURL = documentsDirectory.appendingPathComponent("videoOutput")
+	let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent("videoOutput").appendingPathExtension("mp4")
 	let fileOutput = AVCaptureMovieFileOutput()
 	var timer: Timer?
 	
@@ -67,15 +69,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 			
 			captureSession = AVCaptureSession()
 			captureSession?.addInput(input)
-			
-			let captureMetadataOutput = AVCaptureMetadataOutput()
-			captureSession?.addOutput(captureMetadataOutput)
-	
-			if let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-				fileOutput.startRecording(toOutputFileURL: fileURL, recordingDelegate: self)
-				fileOutput.maxRecordedDuration = CMTime(seconds: 10, preferredTimescale: CMTimeScale.allZeros)
-				captureSession?.addOutput(fileOutput)
-			}
+		
+//			fileOutput.maxRecordedDuration = CMTime(seconds: 10, preferredTimescale: CMTimeScale.allZeros)
+			captureSession?.addOutput(fileOutput)
 			
 			videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
 			videoPreviewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
@@ -99,6 +95,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 			bounceRecordView(recording: true)
 			duration = 0.0
 			createTimer()
+			fileOutput.startRecording(toOutputFileURL: fileURL, recordingDelegate: self)
 			if let timer = timer {
 				RunLoop.current.add(timer, forMode: RunLoopMode.commonModes)
 			}
@@ -108,6 +105,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 			timer?.invalidate()
 			bounceRecordView(recording: false)
 			progressView.setProgress(0.0, animated: true)
+			fileOutput.stopRecording()
 		}
 	}
 	
@@ -123,6 +121,25 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 	}
 	
 	// MARK: - AVCaptureFileOutputRecordingDelegate
+	func capture(_ captureOutput: AVCaptureFileOutput!, didFinishRecordingToOutputFileAt outputFileURL: URL!, fromConnections connections: [Any]!, error: Error!) {
+		if error != nil {
+			print(error)
+		} else {
+			print(outputFileURL)
+			play(videoAt: outputFileURL)
+		}
+	}
 	
+	// test
+	private func play(videoAt URL: URL) {
+		let player = AVQueuePlayer()
+		let playerLayer = AVPlayerLayer(player: player)
+		let playerItem = AVPlayerItem(url: URL)
+		playerLooper = AVPlayerLooper(player: player, templateItem: playerItem)
+		previewView.layer.addSublayer(playerLayer)
+		playerLayer.frame = previewView.bounds
+		playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+		player.play()
+	}
 }
 
