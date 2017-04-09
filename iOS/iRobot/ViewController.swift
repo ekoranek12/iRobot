@@ -25,7 +25,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 	/// The long press gesture to trigger recording
 	@IBOutlet weak var longPress: UILongPressGestureRecognizer!
 	
+	/// Button for canceling recording
 	@IBOutlet weak var cancelButton: UIButton!
+	/// Button for submitting the recording
 	@IBOutlet weak var submitButton: UIButton!
 	
 	var captureSession: AVCaptureSession?
@@ -46,7 +48,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 		}
 	}
 	
+	/// Recording output location TEMPORARY
 	let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent("videoOutput").appendingPathExtension("mp4")
+	let finalURL = FileManager.default.temporaryDirectory.appendingPathComponent("finalVideo").appendingPathExtension("mp4")
 	let fileOutput = AVCaptureMovieFileOutput()
 	var timer: Timer?
 	
@@ -66,6 +70,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 		}
 	}
 	
+	/// Setup the video preview layer
 	private func createVideoPreviewLayer() {
 		// Camera Setup: http://www.appcoda.com/barcode-reader-swift/
 		guard let frontCamera = AVCaptureDevice.defaultDevice(withDeviceType: .builtInWideAngleCamera, mediaType: AVMediaTypeVideo, position: .front) else { return }
@@ -80,7 +85,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 			
 			videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
 			videoPreviewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
-			videoPreviewLayer?.frame = view.bounds
+			let width = UIScreen.main.bounds.width
+			videoPreviewLayer?.frame = CGRect(x: 0, y: 0, width: width, height: width * (1920.0 / 1280.0))
 			videoPreviewLayer?.connection.automaticallyAdjustsVideoMirroring = false
 			videoPreviewLayer?.connection.isVideoMirrored = false
 			previewView.layer.addSublayer(videoPreviewLayer!)
@@ -124,7 +130,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 	}
 	
 	@IBAction func tapSubmit() {
-		
+		cropVideo()
 	}
 	
 	// MARK: - Animations
@@ -138,12 +144,19 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 		}
 	}
 	
+	/// Show or hide the cancel and submit buttons
+	///
+	/// - Parameters:
+	///   - visible: true if the buttons should be shown; false otherwise
+	///   - duration: How long the animation should take. Defaults to 0.3
 	private func toggleButton(visibility visible: Bool, duration: TimeInterval = 0.3) {
 			UIView.animate(withDuration: duration) {
 				self.cancelButton.isEnabled = visible
 				self.cancelButton.alpha = visible ? 1.0 : 0.0
 				self.submitButton.isEnabled = visible
 				self.submitButton.alpha = visible ? 1.0 : 0.0
+				
+				self.longPress.isEnabled = !visible
 		}
 	}
 	
@@ -153,20 +166,63 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 			print(error)
 		} else {
 			print(outputFileURL)
+			print(outputFileURL == fileURL)
 			play(videoAt: outputFileURL)
 		}
 	}
 	
-	// test
+	/// Plays a video from a URL in the playerLayer
+	///
+	/// - Parameter URL: A file URL of the video to be played
 	private func play(videoAt URL: URL) {
 		let player = AVQueuePlayer()
 		playerLayer = AVPlayerLayer(player: player)
 		let playerItem = AVPlayerItem(url: URL)
 		playerLooper = AVPlayerLooper(player: player, templateItem: playerItem)
 		previewView.layer.addSublayer(playerLayer!)
-		playerLayer?.frame = view.bounds
+		let width = UIScreen.main.bounds.width
+		playerLayer?.frame = CGRect(x: 0, y: 0, width: width, height: width * (1920.0 / 1280.0))
 		playerLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
 		player.play()
+	}
+	
+	private func cropVideo() {
+		try? FileManager.default.removeItem(at: finalURL)
+		
+		let asset = AVAsset(url: fileURL)
+		guard let assetTrack = asset.tracks(withMediaType: AVMediaTypeVideo).first else { print("No video track!"); return }
+		
+		let composition = AVMutableVideoComposition()
+		composition.renderSize = CGSize(width: 1280, height: 1920)
+		composition.frameDuration = CMTimeMake(1, 30)
+		
+		let instruction = AVMutableVideoCompositionInstruction()
+		instruction.timeRange = CMTimeRange(start: kCMTimeZero, duration: asset.duration)
+		
+		let transformer = AVMutableVideoCompositionLayerInstruction(assetTrack: assetTrack)
+		
+		let scale = CGFloat(1280.0 / 1080.0)
+		let finalTransform = CGAffineTransform(scaleX: scale, y: scale)
+		transformer.setTransform(finalTransform, at: kCMTimeZero)
+		instruction.layerInstructions = [transformer]
+		composition.instructions = [instruction]
+		
+		let exporter = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality)
+		exporter?.videoComposition = composition
+		exporter?.outputURL = finalURL
+		exporter?.outputFileType = AVFileTypeMPEG4
+		
+		exporter?.exportAsynchronously(completionHandler: {
+			let asset = AVAsset(url: self.finalURL)
+			let track = asset.tracks(withMediaType: AVMediaTypeVideo).first
+			print(track?.naturalSize)
+			print(self.previewView.bounds)
+			
+			let player = AVPlayer(url: self.finalURL)
+			let playerController = AVPlayerViewController()
+			playerController.player = player
+			self.present(playerController, animated: true, completion: nil)
+		})
 	}
 }
 
