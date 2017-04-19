@@ -9,8 +9,9 @@
 import UIKit
 import AVKit
 import AVFoundation
+import MessageUI
 
-class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFileOutputRecordingDelegate {
+class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFileOutputRecordingDelegate, MFMailComposeViewControllerDelegate {
 	
 	/// Camera Preview
 	@IBOutlet weak var previewView: UIView!
@@ -246,11 +247,25 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 		exporter?.outputFileType = AVFileTypeMPEG4
 		
 		exporter?.exportAsynchronously(completionHandler: {
-			let player = AVPlayer(url: self.finalURL)
-			let playerController = AVPlayerViewController()
-			playerController.player = player
-			self.present(playerController, animated: true, completion: nil)
+			self.sendEmail()
 		})
+	}
+	
+	func sendEmail() {
+		if let data = try? Data(contentsOf: finalURL) {
+			let composer = MFMailComposeViewController()
+			composer.mailComposeDelegate = self
+			
+			composer.setSubject("iRobot Submission")
+			composer.setToRecipients(["irobot@studio407.net"])
+			composer.addAttachmentData(data, mimeType: "video/mp4", fileName: UUID().uuidString)
+			
+			present(composer, animated: true, completion: nil)
+		}
+	}
+	
+	func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+		self.dismiss(animated: true, completion: nil)
 	}
 }
 
