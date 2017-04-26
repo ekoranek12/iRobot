@@ -258,7 +258,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 			
 			composer.setSubject("iRobot Submission")
 			composer.setToRecipients(["irobot@studio407.net"])
-			composer.addAttachmentData(data, mimeType: "video/mp4", fileName: UUID().uuidString)
+			composer.addAttachmentData(data, mimeType: "video/mp4", fileName: "\(UUID().uuidString).mp4")
 			
 			present(composer, animated: true, completion: nil)
 		}
