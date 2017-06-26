@@ -37,6 +37,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 	var playerLooper: AVPlayerLooper?
 	var playerLayer: AVPlayerLayer?
 	
+	var hasAgreed = false
+	
 	/// The amount of time the current timer has been firing
 	/// Updates the progress view to reflect recording progress and limit
 	/// resets when duration after 10 seconds
@@ -143,7 +145,25 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 	}
 	
 	@IBAction func tapSubmit() {
-		magicAndCrap()
+		if !hasAgreed {
+			let alert = UIAlertController(title: "Agreement", message: "I do hereby allow Michael McAvoy to use my face image as part of his sculpture \"iRobot: Prick us, do we not bleed\" He will use my face video behind the cast-resin face of the sculpture only. I do not give permission for my image to be shared or used in any other way. I understand that if this sculpture should sell, this agreement will transfer to the new owner.", preferredStyle: .alert)
+
+			alert.addAction(UIAlertAction(title: "Accept", style: UIAlertActionStyle.default, handler: { (action) in
+				self.hasAgreed = true
+				self.dismiss(animated: true, completion: {
+					self.magicAndCrap()
+				})
+			}))
+			
+			alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.destructive, handler: { (action) in
+				self.dismiss(animated: true, completion: nil)
+			}))
+			
+			present(alert, animated: true, completion: nil)
+			
+		} else {
+			magicAndCrap()
+		}
 	}
 	
 	// MARK: - Animations
@@ -258,6 +278,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 			
 			composer.setSubject("iRobot Submission")
 			composer.setToRecipients(["irobot@studio407.net"])
+			composer.setMessageBody("I do hereby allow Michael McAvoy to use my face image as part of his sculpture \"iRobot: Prick us, do we not bleed\" He will use my face video behind the cast-resin face of the sculpture only. I do not give permission for my image to be shared or used in any other way. I understand that if this sculpture should sell, this agreement will transfer to the new owner.", isHTML: false)
 			composer.addAttachmentData(data, mimeType: "video/mp4", fileName: "\(UUID().uuidString).mp4")
 			
 			present(composer, animated: true, completion: nil)
