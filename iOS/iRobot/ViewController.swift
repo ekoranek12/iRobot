@@ -150,9 +150,10 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 
 			alert.addAction(UIAlertAction(title: "Accept", style: UIAlertActionStyle.default, handler: { (action) in
 				self.hasAgreed = true
-				self.dismiss(animated: true, completion: {
+				DispatchQueue.main.async {
 					self.magicAndCrap()
-				})
+				}
+				self.dismiss(animated: true, completion: nil)
 			}))
 			
 			alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.destructive, handler: { (action) in
