@@ -266,6 +266,7 @@
 		87A749E11E8BF6AA00274330 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 7M4W2Y3X7H;
 				INFOPLIST_FILE = iRobot/Info.plist;
@@ -274,12 +275,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.eddiekoranek.IRobot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				VALID_ARCHS = arm64;
 			};
 			name = Debug;
 		};
 		87A749E21E8BF6AA00274330 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 7M4W2Y3X7H;
 				INFOPLIST_FILE = iRobot/Info.plist;
@@ -288,6 +291,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.eddiekoranek.IRobot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				VALID_ARCHS = arm64;
 			};
 			name = Release;
 		};
