@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -34,12 +34,12 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </imageView>
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="alh-io-8wm">
-                                <rect key="frame" x="0.0" y="480" width="320" height="88"/>
+                                <rect key="frame" x="0.0" y="478" width="320" height="90"/>
                                 <color key="progressTintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="trackTintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </progressView>
                             <visualEffectView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SAf-NN-JQL">
-                                <rect key="frame" x="125" y="489" width="70" height="70"/>
+                                <rect key="frame" x="125" y="488" width="70" height="70"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="TkH-dt-H86">
                                     <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -79,7 +79,7 @@
                                 </userDefinedRuntimeAttributes>
                             </visualEffectView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hxW-HI-aSg">
-                                <rect key="frame" x="16" y="509" width="50" height="30"/>
+                                <rect key="frame" x="16" y="508" width="50" height="30"/>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                                 <state key="normal" title="Cancel">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -89,7 +89,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ITf-b3-x4Z">
-                                <rect key="frame" x="253" y="509" width="51" height="30"/>
+                                <rect key="frame" x="253" y="508" width="51" height="30"/>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                                 <state key="normal" title="Submit">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -108,6 +108,7 @@
                             <constraint firstAttribute="trailing" secondItem="jsC-jI-lBi" secondAttribute="trailing" id="8yL-jl-EzY"/>
                             <constraint firstItem="hxW-HI-aSg" firstAttribute="centerY" secondItem="alh-io-8wm" secondAttribute="centerY" id="AIb-Vx-98t"/>
                             <constraint firstItem="jsC-jI-lBi" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="ANE-xD-KHx"/>
+                            <constraint firstItem="alh-io-8wm" firstAttribute="height" secondItem="SAf-NN-JQL" secondAttribute="height" constant="20" id="KHo-D3-RHu"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="alh-io-8wm" secondAttribute="bottom" id="Kn9-HK-LcG"/>
                             <constraint firstAttribute="trailing" secondItem="ITf-b3-x4Z" secondAttribute="trailing" constant="16" id="LL4-CO-zTn"/>
                             <constraint firstItem="Xfj-cF-n6q" firstAttribute="trailing" secondItem="jsC-jI-lBi" secondAttribute="trailing" id="RyI-Ln-XMn"/>
@@ -116,7 +117,6 @@
                             <constraint firstItem="Xfj-cF-n6q" firstAttribute="top" secondItem="jsC-jI-lBi" secondAttribute="top" id="i1X-l1-CbB"/>
                             <constraint firstItem="SAf-NN-JQL" firstAttribute="centerY" secondItem="alh-io-8wm" secondAttribute="centerY" id="kR9-hv-dWq"/>
                             <constraint firstItem="hxW-HI-aSg" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="16" id="otv-Bf-fsw"/>
-                            <constraint firstItem="alh-io-8wm" firstAttribute="top" secondItem="jsC-jI-lBi" secondAttribute="bottom" id="rLN-c1-d1w"/>
                             <constraint firstItem="alh-io-8wm" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="sQ3-Gx-wPh"/>
                         </constraints>
                     </view>
