@@ -107,7 +107,7 @@ public class CameraActiviy extends AppCompatActivity {
     public void composeEmail() {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:")); // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"test@email.com"});
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"irobot@studio407.net"});
         intent.putExtra(Intent.EXTRA_SUBJECT, "IRobot Submission");
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
