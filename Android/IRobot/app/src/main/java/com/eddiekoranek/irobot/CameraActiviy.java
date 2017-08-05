@@ -9,21 +9,50 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import static com.eddiekoranek.irobot.R.drawable.ic_record;
+import static com.eddiekoranek.irobot.R.drawable.ic_send;
+import static com.eddiekoranek.irobot.R.drawable.ic_stop;
+
+
 public class CameraActiviy extends AppCompatActivity {
-    
+
+    private enum CameraState {
+        RECORD,
+        STOP,
+        SEND
+    }
+
+    CameraState state;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_activiy);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        state = CameraState.RECORD;
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                switch (state) {
+                    case RECORD:
+                        fab.setImageResource(ic_stop);
+                        state = CameraState.STOP;
+                        return;
+
+                    case STOP:
+                        fab.setImageResource(ic_send);
+                        state = CameraState.SEND;
+                        return;
+
+                    case SEND:
+                        fab.setImageResource(ic_record);
+                        state = CameraState.RECORD;
+                        return;
+
+                }
             }
         });
     }
