@@ -25,15 +25,16 @@ public class CameraActiviy extends AppCompatActivity {
     }
 
     CameraState state;
-    ProgressBar progressBar;
     CountDownTimer timer;
+    ProgressBar progressBar;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_activiy);
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         state = CameraState.RECORD;
@@ -91,6 +92,10 @@ public class CameraActiviy extends AppCompatActivity {
             @Override
             public void onFinish() {
                 progressBar.setProgress(100);
+                stopRecording();
+                fab.setImageResource(ic_send);
+                state = CameraState.SEND;
+                return;
             }
         };
         timer.start();
