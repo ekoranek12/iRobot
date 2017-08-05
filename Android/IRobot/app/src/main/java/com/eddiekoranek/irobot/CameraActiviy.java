@@ -1,5 +1,7 @@
 package com.eddiekoranek.irobot;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
@@ -76,6 +78,7 @@ public class CameraActiviy extends AppCompatActivity {
 
     private void sendRecording() {
         progressBar.setProgress(0);
+        composeEmail();
     }
 
     private void startTimer() {
@@ -99,6 +102,16 @@ public class CameraActiviy extends AppCompatActivity {
             }
         };
         timer.start();
+    }
+
+    public void composeEmail() {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"test@email.com"});
+        intent.putExtra(Intent.EXTRA_SUBJECT, "IRobot Submission");
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
     @Override
