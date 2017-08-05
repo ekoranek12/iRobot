@@ -1,6 +1,7 @@
 package com.eddiekoranek.irobot;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 
 import static com.eddiekoranek.irobot.R.drawable.ic_record;
 import static com.eddiekoranek.irobot.R.drawable.ic_send;
@@ -23,6 +25,8 @@ public class CameraActiviy extends AppCompatActivity {
     }
 
     CameraState state;
+    ProgressBar progressBar;
+    CountDownTimer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,7 @@ public class CameraActiviy extends AppCompatActivity {
         setContentView(R.layout.activity_camera_activiy);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         state = CameraState.RECORD;
 
@@ -38,16 +43,19 @@ public class CameraActiviy extends AppCompatActivity {
             public void onClick(View view) {
                 switch (state) {
                     case RECORD:
+                        startRecording();
                         fab.setImageResource(ic_stop);
                         state = CameraState.STOP;
                         return;
 
                     case STOP:
+                        stopRecording();
                         fab.setImageResource(ic_send);
                         state = CameraState.SEND;
                         return;
 
                     case SEND:
+                        sendRecording();
                         fab.setImageResource(ic_record);
                         state = CameraState.RECORD;
                         return;
@@ -55,6 +63,37 @@ public class CameraActiviy extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void startRecording() {
+        startTimer();
+    }
+
+    private void stopRecording() {
+        timer.cancel();
+    }
+
+    private void sendRecording() {
+        progressBar.setProgress(0);
+    }
+
+    private void startTimer() {
+        timer = new CountDownTimer(10000, 100) {
+
+            int i = 0;
+
+            @Override
+            public void onTick(long l) {
+                i++;
+                progressBar.setProgress(i*100/(10000/100));
+            }
+
+            @Override
+            public void onFinish() {
+                progressBar.setProgress(100);
+            }
+        };
+        timer.start();
     }
 
     @Override
