@@ -1,11 +1,13 @@
 package com.eddiekoranek.irobot;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -78,7 +80,7 @@ public class CameraActiviy extends AppCompatActivity {
 
     private void sendRecording() {
         progressBar.setProgress(0);
-        composeEmail();
+        showDialog();
     }
 
     private void startTimer() {
@@ -112,6 +114,27 @@ public class CameraActiviy extends AppCompatActivity {
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+
+    public void showDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Agreement");
+        builder.setMessage("I do hereby allow Michael McAvoy to use my face image as part of his sculpture \"iRobot: Prick us, do we not bleed\" He will use my face video behind the cast-resin face of the sculpture only. I do not give permission for my image to be shared or used in any other way. I understand that if this sculpture should sell, this agreement will transfer to the new owner.");
+        builder.setPositiveButton("Agree", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                composeEmail();
+            }
+        });
+
+        builder.setNegativeButton("Disagree", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.show();
     }
 
     @Override
