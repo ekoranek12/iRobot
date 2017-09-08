@@ -50,8 +50,8 @@ public class CameraActiviy extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_activiy);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        fab = findViewById(R.id.fab);
+        progressBar = findViewById(R.id.progressBar);
 
         cameraView = findViewById(R.id.camera);
         cameraView.setSessionType(SessionType.VIDEO);
