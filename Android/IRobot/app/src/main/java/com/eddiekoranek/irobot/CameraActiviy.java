@@ -18,9 +18,12 @@ import android.widget.ProgressBar;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.Facing;
+import com.otaliastudios.cameraview.SessionType;
 import com.otaliastudios.cameraview.VideoQuality;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 
 import static com.eddiekoranek.irobot.R.drawable.ic_record;
 import static com.eddiekoranek.irobot.R.drawable.ic_send;
@@ -40,6 +43,7 @@ public class CameraActiviy extends AppCompatActivity {
     ProgressBar progressBar;
     FloatingActionButton fab;
     CameraView cameraView;
+    File file;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +54,14 @@ public class CameraActiviy extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         cameraView = findViewById(R.id.camera);
+        cameraView.setSessionType(SessionType.VIDEO);
         cameraView.setFacing(Facing.FRONT);
         cameraView.setVideoQuality(VideoQuality.MAX_720P);
         cameraView.addCameraListener(new CameraListener() {
             @Override
             public void onVideoTaken(File video) {
                 super.onVideoTaken(video);
+                file = video;
             }
         });
 
@@ -107,10 +113,16 @@ public class CameraActiviy extends AppCompatActivity {
     }
 
     private void startRecording() {
-        startTimer();
+        try {
+            cameraView.startCapturingVideo(File.createTempFile("Recording", "mp4"));
+            startTimer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void stopRecording() {
+        cameraView.stopCapturingVideo();
         timer.cancel();
     }
 
@@ -143,10 +155,14 @@ public class CameraActiviy extends AppCompatActivity {
     }
 
     public void composeEmail() {
+
+        Uri path = Uri.fromFile(file);
+
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:")); // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"irobot@studio407.net"});
         intent.putExtra(Intent.EXTRA_SUBJECT, "IRobot Submission");
+        intent.putExtra(Intent.EXTRA_STREAM, path);
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
