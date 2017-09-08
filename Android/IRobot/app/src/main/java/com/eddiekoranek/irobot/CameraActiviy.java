@@ -32,6 +32,8 @@ import static com.eddiekoranek.irobot.R.drawable.ic_stop;
 
 public class CameraActiviy extends AppCompatActivity {
 
+    private String terms = "I do hereby allow Michael McAvoy to use my face image as part of his sculpture \"iRobot: Prick us, do we not bleed\" He will use my face video behind the cast-resin face of the sculpture only. I do not give permission for my image to be shared or used in any other way. I understand that if this sculpture should sell, this agreement will transfer to the new owner.";
+
     private enum CameraState {
         RECORD,
         STOP,
@@ -162,6 +164,7 @@ public class CameraActiviy extends AppCompatActivity {
         intent.setData(Uri.parse("mailto:")); // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"irobot@studio407.net"});
         intent.putExtra(Intent.EXTRA_SUBJECT, "IRobot Submission");
+        intent.putExtra(Intent.EXTRA_TEXT, terms);
         intent.putExtra(Intent.EXTRA_STREAM, path);
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
@@ -172,7 +175,7 @@ public class CameraActiviy extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Agreement");
-        builder.setMessage("I do hereby allow Michael McAvoy to use my face image as part of his sculpture \"iRobot: Prick us, do we not bleed\" He will use my face video behind the cast-resin face of the sculpture only. I do not give permission for my image to be shared or used in any other way. I understand that if this sculpture should sell, this agreement will transfer to the new owner.");
+        builder.setMessage(terms);
         builder.setPositiveButton("Agree", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
