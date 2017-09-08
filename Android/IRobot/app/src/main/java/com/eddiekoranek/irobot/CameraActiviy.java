@@ -114,7 +114,7 @@ public class CameraActiviy extends AppCompatActivity {
 
     private void startRecording() {
         try {
-            cameraView.startCapturingVideo(File.createTempFile("Recording", "mp4", this.getExternalCacheDir()));
+            cameraView.startCapturingVideo(File.createTempFile("Recording", ".mp4", this.getExternalCacheDir()));
             startTimer();
         } catch (IOException e) {
             e.printStackTrace();
