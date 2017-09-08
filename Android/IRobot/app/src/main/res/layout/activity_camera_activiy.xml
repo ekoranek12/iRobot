@@ -22,6 +22,9 @@
         app:backgroundTint="@color/colorAccent"
         app:srcCompat="@drawable/ic_record" />
 
-    <include layout="@layout/content_camera_activiy" />
+    <include
+        layout="@layout/content_camera_activiy"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </android.support.design.widget.CoordinatorLayout>

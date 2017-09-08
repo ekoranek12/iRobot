@@ -15,6 +15,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
 
+import com.otaliastudios.cameraview.CameraListener;
+import com.otaliastudios.cameraview.CameraView;
+import com.otaliastudios.cameraview.Facing;
+import com.otaliastudios.cameraview.VideoQuality;
+
+import java.io.File;
+
 import static com.eddiekoranek.irobot.R.drawable.ic_record;
 import static com.eddiekoranek.irobot.R.drawable.ic_send;
 import static com.eddiekoranek.irobot.R.drawable.ic_stop;
@@ -32,6 +39,7 @@ public class CameraActiviy extends AppCompatActivity {
     CountDownTimer timer;
     ProgressBar progressBar;
     FloatingActionButton fab;
+    CameraView cameraView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,16 @@ public class CameraActiviy extends AppCompatActivity {
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        cameraView = findViewById(R.id.camera);
+        cameraView.setFacing(Facing.FRONT);
+        cameraView.setVideoQuality(VideoQuality.MAX_720P);
+        cameraView.addCameraListener(new CameraListener() {
+            @Override
+            public void onVideoTaken(File video) {
+                super.onVideoTaken(video);
+            }
+        });
 
         state = CameraState.RECORD;
 
@@ -68,6 +86,24 @@ public class CameraActiviy extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cameraView.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        cameraView.stop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cameraView.destroy();
     }
 
     private void startRecording() {

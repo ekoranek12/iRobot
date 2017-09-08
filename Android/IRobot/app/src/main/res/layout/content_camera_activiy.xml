@@ -9,6 +9,13 @@
     tools:context="com.eddiekoranek.irobot.CameraActiviy"
     tools:showIn="@layout/activity_camera_activiy">
 
+    <com.otaliastudios.cameraview.CameraView
+        android:id="@+id/camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true"
+        android:scaleType="centerCrop"/>
+
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
