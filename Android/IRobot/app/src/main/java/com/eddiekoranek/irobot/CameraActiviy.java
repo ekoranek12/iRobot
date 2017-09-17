@@ -15,6 +15,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
 
+import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
+import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.Facing;
@@ -46,6 +49,9 @@ public class CameraActiviy extends AppCompatActivity {
     FloatingActionButton fab;
     CameraView cameraView;
     File file;
+    File output;
+
+    FFmpeg ffmpeg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +60,12 @@ public class CameraActiviy extends AppCompatActivity {
 
         fab = findViewById(R.id.fab);
         progressBar = findViewById(R.id.progressBar);
+
+        try {
+            output.createTempFile("FinalVideo", ".mp4", this.getExternalCacheDir());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         cameraView = findViewById(R.id.camera);
         cameraView.setSessionType(SessionType.VIDEO);
@@ -66,6 +78,27 @@ public class CameraActiviy extends AppCompatActivity {
                 file = video;
             }
         });
+
+        ffmpeg = FFmpeg.getInstance(this);
+
+        try {
+            ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
+
+                @Override
+                public void onStart() {}
+
+                @Override
+                public void onFailure() {}
+
+                @Override
+                public void onSuccess() {}
+
+                @Override
+                public void onFinish() {}
+            });
+        } catch (FFmpegNotSupportedException e) {
+            // Handle if FFmpeg is not supported by device
+        }
 
         state = CameraState.RECORD;
 
@@ -190,6 +223,12 @@ public class CameraActiviy extends AppCompatActivity {
             }
         });
         builder.show();
+    }
+
+    private void addOverlay() {
+        
+        String[] cmd = new String[]{ "-i", file.getAbsolutePath(), "-i", image.png, "-filter_complex", "overlay=0:main_h-overlay_h", output.getPath()};
+        ffmpeg.execute(cmd, );
     }
 
     @Override
