@@ -173,6 +173,21 @@ public class CameraActiviy extends AppCompatActivity {
         builder.show();
     }
 
+    private void showFFMPEGDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Unavailable");
+        builder.setMessage("Sorry. Your device is not capable of rendering the final video.");
+
+        builder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.show();
+    }
+
     private void addOverlay() {
         
 //        String[] cmd = new String[]{ "-i", file.getAbsolutePath(), "-i", image.png, "-filter_complex", "overlay=0:main_h-overlay_h", output.getPath()};
@@ -229,7 +244,8 @@ public class CameraActiviy extends AppCompatActivity {
                 }
             });
         } catch (FFmpegNotSupportedException e) {
-            // Handle if FFmpeg is not supported by device
+            e.printStackTrace();
+            showFFMPEGDialog();
         }
     }
 
