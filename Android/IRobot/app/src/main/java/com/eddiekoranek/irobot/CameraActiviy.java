@@ -67,66 +67,12 @@ public class CameraActiviy extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        cameraView = findViewById(R.id.camera);
-        cameraView.setSessionType(SessionType.VIDEO);
-        cameraView.setFacing(Facing.FRONT);
-        cameraView.setVideoQuality(VideoQuality.MAX_720P);
-        cameraView.addCameraListener(new CameraListener() {
-            @Override
-            public void onVideoTaken(File video) {
-                super.onVideoTaken(video);
-                file = video;
-            }
-        });
 
-        ffmpeg = FFmpeg.getInstance(this);
-
-        try {
-            ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
-
-                @Override
-                public void onStart() {}
-
-                @Override
-                public void onFailure() {}
-
-                @Override
-                public void onSuccess() {}
-
-                @Override
-                public void onFinish() {}
-            });
-        } catch (FFmpegNotSupportedException e) {
-            // Handle if FFmpeg is not supported by device
-        }
+        setupCamera();
+        setupFFmpeg();
+        setupFAB();
 
         state = CameraState.RECORD;
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (state) {
-                    case RECORD:
-                        startRecording();
-                        fab.setImageResource(ic_stop);
-                        state = CameraState.STOP;
-                        return;
-
-                    case STOP:
-                        stopRecording();
-                        fab.setImageResource(ic_send);
-                        state = CameraState.SEND;
-                        return;
-
-                    case SEND:
-                        sendRecording();
-                        fab.setImageResource(ic_record);
-                        state = CameraState.RECORD;
-                        return;
-
-                }
-            }
-        });
     }
 
     @Override
@@ -251,5 +197,70 @@ public class CameraActiviy extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setupFFmpeg() {
+        ffmpeg = FFmpeg.getInstance(this);
+
+        try {
+            ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
+
+                @Override
+                public void onStart() {}
+
+                @Override
+                public void onFailure() {}
+
+                @Override
+                public void onSuccess() {}
+
+                @Override
+                public void onFinish() {}
+            });
+        } catch (FFmpegNotSupportedException e) {
+            // Handle if FFmpeg is not supported by device
+        }
+    }
+
+    private void setupFAB() {
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (state) {
+                    case RECORD:
+                        startRecording();
+                        fab.setImageResource(ic_stop);
+                        state = CameraState.STOP;
+                        return;
+
+                    case STOP:
+                        stopRecording();
+                        fab.setImageResource(ic_send);
+                        state = CameraState.SEND;
+                        return;
+
+                    case SEND:
+                        sendRecording();
+                        fab.setImageResource(ic_record);
+                        state = CameraState.RECORD;
+                        return;
+
+                }
+            }
+        });
+    }
+
+    private void setupCamera() {
+        cameraView = findViewById(R.id.camera);
+        cameraView.setSessionType(SessionType.VIDEO);
+        cameraView.setFacing(Facing.FRONT);
+        cameraView.setVideoQuality(VideoQuality.MAX_720P);
+        cameraView.addCameraListener(new CameraListener() {
+            @Override
+            public void onVideoTaken(File video) {
+                super.onVideoTaken(video);
+                file = video;
+            }
+        });
     }
 }
