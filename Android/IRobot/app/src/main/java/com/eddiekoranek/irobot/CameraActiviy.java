@@ -46,6 +46,7 @@ public class CameraActiviy extends AppCompatActivity {
     CameraState state;
     CountDownTimer timer;
     ProgressBar progressBar;
+    ProgressBar ffmpegProgressBar;
     FloatingActionButton fab;
     CameraView cameraView;
     File file;
@@ -60,13 +61,14 @@ public class CameraActiviy extends AppCompatActivity {
 
         fab = findViewById(R.id.fab);
         progressBar = findViewById(R.id.progressBar);
+        ffmpegProgressBar = findViewById(R.id.ffmpegProgress);
+        ffmpegProgressBar.setVisibility(View.INVISIBLE);
 
         try {
             output.createTempFile("FinalVideo", ".mp4", this.getExternalCacheDir());
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         setupCamera();
         setupFFmpeg();
@@ -173,8 +175,8 @@ public class CameraActiviy extends AppCompatActivity {
 
     private void addOverlay() {
         
-        String[] cmd = new String[]{ "-i", file.getAbsolutePath(), "-i", image.png, "-filter_complex", "overlay=0:main_h-overlay_h", output.getPath()};
-        ffmpeg.execute(cmd, );
+//        String[] cmd = new String[]{ "-i", file.getAbsolutePath(), "-i", image.png, "-filter_complex", "overlay=0:main_h-overlay_h", output.getPath()};
+//        ffmpeg.execute(cmd, );
     }
 
     @Override
@@ -206,16 +208,25 @@ public class CameraActiviy extends AppCompatActivity {
             ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
 
                 @Override
-                public void onStart() {}
+                public void onStart() {
+                    ffmpegProgressBar.setVisibility(View.VISIBLE);
+                    ffmpegProgressBar.setIndeterminate(true);
+                }
 
                 @Override
-                public void onFailure() {}
+                public void onFailure() {
+                    ffmpegProgressBar.setVisibility(View.INVISIBLE);
+                }
 
                 @Override
-                public void onSuccess() {}
+                public void onSuccess() {
+                    ffmpegProgressBar.setVisibility(View.INVISIBLE);
+                }
 
                 @Override
-                public void onFinish() {}
+                public void onFinish() {
+                    ffmpegProgressBar.setVisibility(View.INVISIBLE);
+                }
             });
         } catch (FFmpegNotSupportedException e) {
             // Handle if FFmpeg is not supported by device
