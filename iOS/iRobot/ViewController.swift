@@ -151,7 +151,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 			alert.addAction(UIAlertAction(title: "Accept", style: UIAlertActionStyle.default, handler: { (action) in
 				self.hasAgreed = true
 				DispatchQueue.main.async {
-					self.magicAndCrap()
+					self.addOverlayToVideo()
 				}
 				self.dismiss(animated: true, completion: nil)
 			}))
@@ -163,7 +163,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 			present(alert, animated: true, completion: nil)
 			
 		} else {
-			magicAndCrap()
+			addOverlayToVideo()
 		}
 	}
 	
@@ -220,7 +220,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, AVCaptureFi
 		player.play()
 	}
 	
-	private func magicAndCrap() {
+	private func addOverlayToVideo() {
 		try? FileManager.default.removeItem(at: finalURL)
 		
 		let asset = AVAsset(url: fileURL)
