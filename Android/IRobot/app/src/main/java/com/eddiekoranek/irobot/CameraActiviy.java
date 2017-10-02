@@ -46,6 +46,7 @@ public class CameraActiviy extends AppCompatActivity {
     CameraState state;
     CountDownTimer timer;
     ProgressBar progressBar;
+    ProgressBar ffmpegProgressBar;
     FloatingActionButton fab;
     CameraView cameraView;
     File file;
@@ -60,6 +61,8 @@ public class CameraActiviy extends AppCompatActivity {
 
         fab = findViewById(R.id.fab);
         progressBar = findViewById(R.id.progressBar);
+        ffmpegProgressBar = findViewById(R.id.ffmpegProgress);
+        ffmpegProgressBar.setVisibility(View.INVISIBLE);
 
         try {
             output.createTempFile("FinalVideo", ".mp4", this.getExternalCacheDir());
@@ -67,66 +70,11 @@ public class CameraActiviy extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        cameraView = findViewById(R.id.camera);
-        cameraView.setSessionType(SessionType.VIDEO);
-        cameraView.setFacing(Facing.FRONT);
-        cameraView.setVideoQuality(VideoQuality.MAX_720P);
-        cameraView.addCameraListener(new CameraListener() {
-            @Override
-            public void onVideoTaken(File video) {
-                super.onVideoTaken(video);
-                file = video;
-            }
-        });
-
-        ffmpeg = FFmpeg.getInstance(this);
-
-        try {
-            ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
-
-                @Override
-                public void onStart() {}
-
-                @Override
-                public void onFailure() {}
-
-                @Override
-                public void onSuccess() {}
-
-                @Override
-                public void onFinish() {}
-            });
-        } catch (FFmpegNotSupportedException e) {
-            // Handle if FFmpeg is not supported by device
-        }
+        setupCamera();
+        setupFFmpeg();
+        setupFAB();
 
         state = CameraState.RECORD;
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (state) {
-                    case RECORD:
-                        startRecording();
-                        fab.setImageResource(ic_stop);
-                        state = CameraState.STOP;
-                        return;
-
-                    case STOP:
-                        stopRecording();
-                        fab.setImageResource(ic_send);
-                        state = CameraState.SEND;
-                        return;
-
-                    case SEND:
-                        sendRecording();
-                        fab.setImageResource(ic_record);
-                        state = CameraState.RECORD;
-                        return;
-
-                }
-            }
-        });
     }
 
     @Override
@@ -225,10 +173,25 @@ public class CameraActiviy extends AppCompatActivity {
         builder.show();
     }
 
+    private void showFFMPEGDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Unavailable");
+        builder.setMessage("Sorry. Your device is not capable of rendering the final video.");
+
+        builder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.show();
+    }
+
     private void addOverlay() {
         
-        String[] cmd = new String[]{ "-i", file.getAbsolutePath(), "-i", image.png, "-filter_complex", "overlay=0:main_h-overlay_h", output.getPath()};
-        ffmpeg.execute(cmd, );
+//        String[] cmd = new String[]{ "-i", file.getAbsolutePath(), "-i", image.png, "-filter_complex", "overlay=0:main_h-overlay_h", output.getPath()};
+//        ffmpeg.execute(cmd, );
     }
 
     @Override
@@ -251,5 +214,80 @@ public class CameraActiviy extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setupFFmpeg() {
+        ffmpeg = FFmpeg.getInstance(this);
+
+        try {
+            ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
+
+                @Override
+                public void onStart() {
+                    ffmpegProgressBar.setVisibility(View.VISIBLE);
+                    ffmpegProgressBar.setIndeterminate(true);
+                }
+
+                @Override
+                public void onFailure() {
+                    ffmpegProgressBar.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onSuccess() {
+                    ffmpegProgressBar.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onFinish() {
+                    ffmpegProgressBar.setVisibility(View.INVISIBLE);
+                }
+            });
+        } catch (FFmpegNotSupportedException e) {
+            e.printStackTrace();
+            showFFMPEGDialog();
+        }
+    }
+
+    private void setupFAB() {
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (state) {
+                    case RECORD:
+                        startRecording();
+                        fab.setImageResource(ic_stop);
+                        state = CameraState.STOP;
+                        return;
+
+                    case STOP:
+                        stopRecording();
+                        fab.setImageResource(ic_send);
+                        state = CameraState.SEND;
+                        return;
+
+                    case SEND:
+                        sendRecording();
+                        fab.setImageResource(ic_record);
+                        state = CameraState.RECORD;
+                        return;
+
+                }
+            }
+        });
+    }
+
+    private void setupCamera() {
+        cameraView = findViewById(R.id.camera);
+        cameraView.setSessionType(SessionType.VIDEO);
+        cameraView.setFacing(Facing.FRONT);
+        cameraView.setVideoQuality(VideoQuality.MAX_720P);
+        cameraView.addCameraListener(new CameraListener() {
+            @Override
+            public void onVideoTaken(File video) {
+                super.onVideoTaken(video);
+                file = video;
+            }
+        });
     }
 }
