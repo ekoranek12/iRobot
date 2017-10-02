@@ -192,6 +192,7 @@ public class CameraActiviy extends AppCompatActivity {
         builder.show();
     }
 
+    // This is the overlay code that I cannot get to work.
     private void addOverlay() {
         File overlay = getOverlayFile();
 
@@ -347,7 +348,7 @@ public class CameraActiviy extends AppCompatActivity {
             public void onVideoTaken(File video) {
                 super.onVideoTaken(video);
                 file = video;
-                addOverlay();
+//                addOverlay();
             }
         });
     }
