@@ -2,6 +2,7 @@ package com.eddiekoranek.irobot;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -15,8 +16,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
 
+import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraView;
@@ -25,12 +28,17 @@ import com.otaliastudios.cameraview.SessionType;
 import com.otaliastudios.cameraview.VideoQuality;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 
+import static com.eddiekoranek.irobot.R.drawable.ic_camera_overlay;
 import static com.eddiekoranek.irobot.R.drawable.ic_record;
 import static com.eddiekoranek.irobot.R.drawable.ic_send;
 import static com.eddiekoranek.irobot.R.drawable.ic_stop;
+import static java.security.AccessController.getContext;
 
 
 public class CameraActiviy extends AppCompatActivity {
@@ -64,11 +72,7 @@ public class CameraActiviy extends AppCompatActivity {
         ffmpegProgressBar = findViewById(R.id.ffmpegProgress);
         ffmpegProgressBar.setVisibility(View.INVISIBLE);
 
-        try {
-            output.createTempFile("FinalVideo", ".mp4", this.getExternalCacheDir());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        output = new File(this.getExternalFilesDir(null), "FinalVideo.mp4");
 
         setupCamera();
         setupFFmpeg();
@@ -189,9 +193,65 @@ public class CameraActiviy extends AppCompatActivity {
     }
 
     private void addOverlay() {
-        
-//        String[] cmd = new String[]{ "-i", file.getAbsolutePath(), "-i", image.png, "-filter_complex", "overlay=0:main_h-overlay_h", output.getPath()};
-//        ffmpeg.execute(cmd, );
+        File overlay = getOverlayFile();
+
+        String[] cmd = new String[]{  "-y", "-loop 1", "-i", file.getAbsolutePath(), "-i", overlay.getAbsolutePath(),"-filter_complex", "[1][0]scale2ref[i][m];[m][i]overlay[v]" ,"-map", "[v]", "-map",  "0:a?", "-ac", "2", output.getPath()};
+
+        try {
+
+            ffmpeg.execute(cmd, new ExecuteBinaryResponseHandler() {
+                @Override
+                public void onFailure(String s) {
+                    System.out.println("on failure----"+s);
+                }
+
+                @Override
+                public void onSuccess(String s) {
+                    System.out.println("on success-----"+s);
+                }
+
+                @Override
+                public void onProgress(String s) {
+                    //Log.d(TAG, "Started command : ffmpeg "+command);
+                    System.out.println("Started---"+s);
+
+
+                }
+
+                @Override
+                public void onStart() {
+                    //Log.d(TAG, "Started command : ffmpeg " + command);
+                    System.out.println("Start----");}
+
+                @Override
+                public void onFinish() {
+                    System.out.println("Finish-----");
+                    // Send final file to email
+                }
+            });
+        } catch (FFmpegCommandAlreadyRunningException e) {
+            // do nothing for now
+            System.out.println("exceptio :::" + e.getMessage());
+        }
+    }
+
+    private File getOverlayFile() {
+        try
+        {
+            File f= File.createTempFile("Overlay", ".jpg", this.getExternalCacheDir());
+            InputStream inputStream = getResources().openRawResource(R.drawable.ic_camera_overlay);
+            OutputStream out=new FileOutputStream(f);
+            byte buf[]=new byte[1024];
+            int len;
+            while((len=inputStream.read(buf))>0)
+                out.write(buf,0,len);
+            out.close();
+            inputStream.close();
+            return f;
+        }
+        catch (IOException e) {
+            return null;
+        }
     }
 
     @Override
@@ -287,6 +347,7 @@ public class CameraActiviy extends AppCompatActivity {
             public void onVideoTaken(File video) {
                 super.onVideoTaken(video);
                 file = video;
+                addOverlay();
             }
         });
     }
